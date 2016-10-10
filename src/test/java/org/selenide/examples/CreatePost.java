@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 
-import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byTitle;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.$;
@@ -19,25 +18,40 @@ import static com.codeborne.selenide.Selenide.open;
  */
 public class CreatePost {
 
-    @Test
-    public void createPost_WithImage_Created(){
+    private String g_baseUrl = "http://68.169.52.12/EnvyGram/html/";
 
-        //System.setProperty("selenide.browser", "chrome");
+
+    @Test
+    public void createPost_WithImage_Created() {
+
+        String headliner = "headliner";
+        String description = "description";
+
         // arrange
-        open("http://68.169.52.12/EnvyGram/html/");
+        open(g_baseUrl);
         login("John", "bn3211");
         openCreateNewPostWindow();
+
         // act
-        fillRequiredFields("headline", "description");
+        fillRequiredFields(headliner, description);
+
         // assert
-        Assert();
+        open(g_baseUrl + "home");
+        $(byTitle(headliner)).shouldBe();
+        $(byTitle(description)).shouldBe();
+        $(By.xpath("(.//*[@alt=\"post\"])[1]")).isImage();
 
     }
 
-    private void Assert() {
-        $(byTitle("Headliner")).shouldHave(text("Headliner"));
-        $(byTitle("Description")).shouldHave(text("Description"));
-        $(".attachment.view-right.text-center>img").isImage();
+    private void login(String name, String password) {
+        $("#loginDialogButton").click();
+        $("#UserLogin_email").setValue(name);
+        $("#UserLogin_password").setValue(password).pressEnter();
+    }
+
+    private void openCreateNewPostWindow() {
+        $(".username.pull-left").click();
+        $(".btn-primary-small.createNewPostButton.padding.left10.right10.btn.btn-small").click();
     }
 
     private void fillRequiredFields(String headline, String description) {
@@ -46,19 +60,8 @@ public class CreatePost {
         SelenideElement dropMenu = $("select[name=\"PostCreate[adType]\"]");
         dropMenu.click();
         dropMenu.$("option[value=\"1\"]").scrollTo().click();
-        $(".fileField.inputFile").uploadFile(new File("/home/Desktop/IMG_20161006_123821.jpg"));
+        $(".fileField.inputFile").uploadFile(new File("src/test/java/org/selenide/TestData/createPost_WithImage_Created.jpg"));
         $(withText("Create Envygram")).click();
     }
 
-    private void openCreateNewPostWindow() {
-        $(".username.pull-left").click();
-        $(".btn-primary-small.createNewPostButton.padding.left10.right10.btn.btn-small").click();
-    }
-
-    private void login(String name, String password) {
-        $("#loginDialogButton").click();
-        $("#UserLogin_email").setValue(name);
-        $("#UserLogin_password").setValue(password).pressEnter();
-
-    }
 }
