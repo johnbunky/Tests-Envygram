@@ -6,6 +6,8 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.codeborne.selenide.Selectors.byTitle;
 import static com.codeborne.selenide.Selectors.withText;
@@ -24,8 +26,10 @@ public class CreatePost {
     @Test
     public void createPost_WithImage_Created() {
 
-        String headliner = "headliner";
-        String description = "description";
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        String headliner = "headliner" + format.format(date);
+        String description = "description" + format.format(date);
 
         // arrange
         open(g_baseUrl);
@@ -37,9 +41,10 @@ public class CreatePost {
 
         // assert
         open(g_baseUrl + "home");
-        $(byTitle(headliner)).shouldBe();
-        $(byTitle(description)).shouldBe();
-        $(By.xpath("(.//*[@alt=\"post\"])[1]")).isImage();
+        SelenideElement newPost = $(By.xpath("(.//*[@class='span6 offset3 frame'])[1]"));
+        newPost.$(byTitle(headliner)).shouldBe();
+        newPost.$(byTitle(description)).shouldBe();
+        newPost.$(By.xpath("(.//*[@alt=\"post\"])[1]")).isImage();
 
     }
 
@@ -60,7 +65,7 @@ public class CreatePost {
         SelenideElement dropMenu = $("select[name=\"PostCreate[adType]\"]");
         dropMenu.click();
         dropMenu.$("option[value=\"1\"]").scrollTo().click();
-        $(".fileField.inputFile").uploadFile(new File("src/test/java/org/selenide/TestData/createPost_WithImage_Created.jpg"));
+        $(".fileField.inputFile").uploadFile(new File("src/test/java/org/selenide/TestData/createPost_WithImaga_Created.jpg"));
         $(withText("Create Envygram")).click();
     }
 
