@@ -20,7 +20,7 @@ import static com.codeborne.selenide.Selenide.open;
  */
 public class CreatePost {
 
-    private String g_baseUrl = "http://68.169.52.12/EnvyGram/html/";
+    private String BASE_URL = "http://68.169.52.12/EnvyGram/html/";
 
 
     @Test
@@ -32,15 +32,17 @@ public class CreatePost {
         String description = "description" + format.format(date);
 
         // arrange
-        open(g_baseUrl);
+        open(BASE_URL);
         login("John", "bn3211");
         openCreateNewPostWindow();
 
         // act
         fillRequiredFields(headliner, description);
+        $(withText("Create Envygram")).click();
+
 
         // assert
-        open(g_baseUrl + "home");
+        open(BASE_URL + "home");
         SelenideElement newPost = $(By.xpath("(.//*[@class='span6 offset3 frame'])[1]"));
         newPost.$(byTitle(headliner)).shouldBe();
         newPost.$(byTitle(description)).shouldBe();
@@ -65,8 +67,7 @@ public class CreatePost {
         SelenideElement dropMenu = $("select[name=\"PostCreate[adType]\"]");
         dropMenu.click();
         dropMenu.$("option[value=\"1\"]").scrollTo().click();
-        $(".fileField.inputFile").uploadFile(new File("src/test/java/org/selenide/TestData/createPost_WithImaga_Created.jpg"));
-        $(withText("Create Envygram")).click();
+        $(".fileField.inputFile").uploadFile(new File("src/test/java/org/selenide/testdata/createPost_WithImaga_Created.jpg"));
     }
 
 }
